@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - Blog Generator{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<style>
+    .blog-content img {
+        max-width: 100%;
+        height: auto;
+        margin: 20px 0;
+    }
+    .blog-content h1, .blog-content h2, .blog-content h3 {
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    .blog-content p {
+        margin-bottom: 20px;
+        line-height: 1.7;
+    }
+    .blog-content blockquote {
+        border-left: 4px solid #ccc;
+        padding-left: 15px;
+        margin-left: 0;
+        color: #666;
+    }
+    .blog-header-image {
+        max-height: 400px;
+        object-fit: cover;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<article class="blog-post">
+    <header class="mb-4">
+        <h1 class="display-5 fw-bold">{{ post.title }}</h1>
+        <div class="text-muted mb-3">
+            Published on {{ post.published_at|date:"F d, Y" }}
+        </div>
+        
+        {% if post.image %}
+            <img src="{{ post.image.url }}" class="blog-header-image rounded mb-4" alt="{{ post.title }}">
+        {% elif post.image_url %}
+            <img src="{{ post.image_url }}" class="blog-header-image rounded mb-4" alt="{{ post.title }}">
+        {% endif %}
+    </header>
+    
+    <div class="blog-content" id="blog-content">
+        {{ post.content|safe }}
+    </div>
+</article>
+
+<div class="mt-5 pt-3 border-top">
+    <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-primary">&larr; Back to Blog List</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Convert markdown to HTML
+        const content = document.getElementById('blog-content');
+        if (content) {
+            // Check if content contains markdown
+            if (content.innerHTML.includes('#') || 
+                content.innerHTML.includes('*') || 
+                content.innerHTML.includes('```')) {
+                
+                // Convert markdown to HTML
+                content.innerHTML = marked.parse(content.innerHTML);
+                
+                // Apply syntax highlighting to code blocks
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

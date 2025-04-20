@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate Blog - Blog Generator{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Generate a New Blog Post</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Enter a topic and our AI will automatically generate a complete blog post for you.</p>
+                
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <form method="post" action="{% url 'blog:generate_blog' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="topic" class="form-label">Blog Topic</label>
+                        <input type="text" class="form-control" id="topic" name="topic" 
+                               placeholder="Enter a topic (e.g., 'Benefits of Meditation', 'Machine Learning Trends')" required>
+                        <div class="form-text">Be specific for better results. The AI will generate a complete blog post based on this topic.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Generate Blog Post</button>
+                </form>
+            </div>
+            <div class="card-footer">
+                <p class="text-muted mb-0">Powered by OpenRouter AI</p>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h3>How It Works</h3>
+            <ol>
+                <li>Enter a specific topic for your blog post</li>
+                <li>Our AI will generate a complete, well-structured blog post</li>
+                <li>The system will automatically find a relevant image</li>
+                <li>The content is paraphrased to ensure uniqueness</li>
+                <li>You can edit the generated content in the admin panel if needed</li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}

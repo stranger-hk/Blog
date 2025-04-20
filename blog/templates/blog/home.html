@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Blog Generator{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to Blog Generator</h1>
+    <p class="lead">Automatically generate high-quality blog posts with AI</p>
+    <hr class="my-4">
+    <p>Our platform uses advanced AI to create engaging, informative blog content on any topic.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'blog:blog_list' %}" role="button">View Blogs</a>
+</div>
+
+<section class="latest-posts mt-5">
+    <h2 class="mb-4">Latest Blog Posts</h2>
+    
+    {% if latest_posts %}
+        <div class="row">
+            {% for post in latest_posts %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% elif post.image_url %}
+                            <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200?text=Blog+Post" class="card-img-top" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text text-muted">{{ post.topic }}</p>
+                            <a href="{% url 'blog:blog_detail' post.slug %}" class="btn btn-sm btn-outline-primary">Read More</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Published: {{ post.published_at|date:"F d, Y" }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No blog posts available yet. Check back soon!
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
